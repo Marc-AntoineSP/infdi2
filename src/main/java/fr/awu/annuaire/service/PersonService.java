@@ -2,12 +2,8 @@ package fr.awu.annuaire.service;
 
 import java.util.List;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.repository.PersonRepository;
-import fr.awu.annuaire.utils.HibernateUtil;
 
 public class PersonService {
     private PersonRepository personRepository;
@@ -23,7 +19,11 @@ public class PersonService {
     public List<Person> getAll() {
         return this.personRepository.getAll();
     }
-    
+
+    public Person findByEmail(String email) {
+        return this.personRepository.findByEmail(email);
+    }
+
     public void update(Person person) throws IllegalArgumentException {
         if(person.getFirstName() == null || person.getFirstName().isBlank()) {
             throw new IllegalArgumentException("CreationError: Person first name cannot be null");

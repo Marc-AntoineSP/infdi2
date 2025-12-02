@@ -22,6 +22,14 @@ public class PersonRepository {
             return session.createQuery("from Person", Person.class).list();
         }
     }
+
+    public Person findByEmail(String email) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("from Person where email = :email", Person.class)
+                .setParameter("email", email)
+                .uniqueResult();
+        }
+    }
     
     public void update(Person person) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
