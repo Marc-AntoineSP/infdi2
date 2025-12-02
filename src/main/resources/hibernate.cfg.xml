@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-configuration>
+  <session-factory>
+
+    <!-- Connexion H2 locale -->
+    <property name="hibernate.connection.driver_class">org.h2.Driver</property>
+    <!-- <property name="hibernate.connection.url">jdbc:h2:file:./cavemanager-db</property> C'est juste pour rester en mémoire pour vos tests. Après on passera en vraie DB quand tout vos repository seront ok-->
+    <property name="hibernate.connection.url">jdbc:h2:mem:annuaire;DB_CLOSE_DELAY=-1</property>
+    <property name="hibernate.connection.username">sa</property>
+    <property name="hibernate.connection.password"></property>
+
+    <!-- Dialecte -->
+    <property name="hibernate.dialect">org.hibernate.dialect.H2Dialect</property>
+
+    <!-- Schéma en dev -->
+    <property name="hibernate.hbm2ddl.auto">update</property>
+
+    <!-- Debug SQL -->
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">true</property>
+
+    <!-- Entités -->
+    <mapping class="fr.awu.annuaire.model.Service" />
+    <mapping class="fr.awu.annuaire.model.Person" />
+    <mapping class="fr.awu.annuaire.model.Admin" />
+    <mapping class="fr.awu.annuaire.model.Employee" />
+    <mapping class="fr.awu.annuaire.model.Site" />
+
+  </session-factory>
+</hibernate-configuration>
