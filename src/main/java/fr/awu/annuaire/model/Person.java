@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "persons")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Person {
+public abstract class Person implements IEntity{
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID id;

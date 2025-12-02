@@ -1,5 +1,6 @@
 package fr.awu.annuaire.model;
 
+import fr.awu.annuaire.interfaces.IEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "services")
-public class Service {
+public class Service implements IEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
