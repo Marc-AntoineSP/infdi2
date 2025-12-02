@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import fr.awu.annuaire.errors.CreationException;
 import fr.awu.annuaire.service.ServiceService;
 
 class ServiceTest {
