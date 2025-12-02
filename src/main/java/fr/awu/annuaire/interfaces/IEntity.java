@@ -1,4 +1,4 @@
-package fr.awu.annuaire.model;
+package fr.awu.annuaire.interfaces;
 
 public interface IEntity {
 

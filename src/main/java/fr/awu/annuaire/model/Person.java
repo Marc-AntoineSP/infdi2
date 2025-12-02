@@ -2,7 +2,10 @@ package fr.awu.annuaire.model;
 
 import java.util.UUID;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import fr.awu.annuaire.enums.Roles;
+import fr.awu.annuaire.interfaces.IEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,14 +39,15 @@ public abstract class Person implements IEntity{
     private Site site;
     @Enumerated(EnumType.STRING)
     private Roles role;
+    @Column(name = "hashed_password", nullable = false)
     private String hashedPassword;
 
     protected Person(){
         //Hibernate
     }
 
-    public Person(String firstName, String lastName, String email, String homePhone, String mobilePhone,
-            Service service, Site site, Roles role, String hashedPassword) {
+    protected Person(String firstName, String lastName, String email, String homePhone, String mobilePhone,
+            Service service, Site site, Roles role, String motDePasseEnClair) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -52,7 +56,7 @@ public abstract class Person implements IEntity{
         this.service = service;
         this.site = site;
         this.role = role;
-        this.hashedPassword = hashedPassword;
+        this.hashedPassword = BCrypt.hashpw(motDePasseEnClair, BCrypt.gensalt());
     }
 
     public String getFirstName() {
