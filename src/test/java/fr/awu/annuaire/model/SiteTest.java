@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import fr.awu.annuaire.service.SiteService;
 
 class SiteTest {
-    private SiteService siteService = new SiteService();
+    private final SiteService siteService = new SiteService();
 
     @Test
-    void createSiteTestShouldSuccess(){
+    void createSiteTestShouldSuccess() {
         Site site = new Site();
         Site site2 = new Site("Sans setter");
         site.setVille("Paris");
@@ -19,7 +19,7 @@ class SiteTest {
     }
 
     @Test
-    void addSiteToDatabaseTestShouldSuccess(){
+    void addSiteToDatabaseTestShouldSuccess() {
         Site site = new Site();
         site.setVille("Paris");
         siteService.save(site);
@@ -27,8 +27,28 @@ class SiteTest {
     }
 
     @Test
-    void addSiteToDatabaseTestShouldFail(){
+    void addSiteToDatabaseTestShouldFail() {
         Site site = new Site("");
-        assertThrows(IllegalArgumentException.class, () -> siteService.save(site));
+        assertThrows(IllegalArgumentException.class,
+                () -> siteService.save(site));
+    }
+
+    @Test
+    void updateSiteTestShouldSuccess() {
+        Site site = new Site("Lyon");
+        siteService.save(site);
+        site.setVille("Marseille");
+        siteService.update(site);
+        boolean find = siteService.getAll().contains(site);
+        assertTrue(find);
+    }
+
+    @Test
+    void updateSiteTestShouldFail() {
+        Site site = new Site("Lyon");
+        siteService.save(site);
+        site.setVille("");
+        assertThrows(IllegalArgumentException.class,
+                () -> siteService.update(site));
     }
 }

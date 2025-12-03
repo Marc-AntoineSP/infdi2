@@ -13,8 +13,9 @@ public class SiteService {
     }
 
     public void save(Site site) throws IllegalArgumentException {
-        if(site.getVille() == null || site.getVille().isBlank()) {
-            throw new IllegalArgumentException("CreationError: Site name cannot be null");
+        if (site.getVille() == null || site.getVille().isBlank()) {
+            throw new IllegalArgumentException(
+                    "CreationError: Site name cannot be null");
         }
         siteRepository.save(site);
     }
@@ -23,14 +24,19 @@ public class SiteService {
         return siteRepository.getAll();
     }
 
+    public Site getById(int id) {
+        return siteRepository.getById(id);
+    }
+
     public void update(Site site) throws IllegalArgumentException {
-        if(site.getVille() == null || site.getVille().isBlank()) {
-            throw new IllegalArgumentException("CreationError: Site name cannot be null");
+        if (site.getVille() == null || site.getVille().isBlank()) {
+            throw new IllegalArgumentException(
+                    "CreationError: Site name cannot be null");
         }
         siteRepository.update(site);
     }
 
-    public void delete (Site site) {
+    public void delete(Site site) {
         siteRepository.delete(site);
     }
 }

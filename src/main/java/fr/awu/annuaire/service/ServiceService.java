@@ -3,7 +3,6 @@ package fr.awu.annuaire.service;
 import java.util.List;
 
 import fr.awu.annuaire.model.Service;
-
 import fr.awu.annuaire.repository.ServiceRepository;
 
 public class ServiceService {
@@ -14,8 +13,9 @@ public class ServiceService {
     }
 
     public void save(Service service) throws IllegalArgumentException {
-        if(service.getName() == null || service.getName().isBlank()) {
-            throw new IllegalArgumentException("CreationError: Service name cannot be null");
+        if (service.getName() == null || service.getName().isBlank()) {
+            throw new IllegalArgumentException(
+                    "CreationError: Service name cannot be null");
         }
         serviceRepository.save(service);
     }
@@ -24,14 +24,19 @@ public class ServiceService {
         return serviceRepository.getAll();
     }
 
+    public Service getById(int id) {
+        return serviceRepository.getById(id);
+    }
+
     public void update(Service service) throws IllegalArgumentException {
-        if(service.getName() == null || service.getName().isBlank()) {
-            throw new IllegalArgumentException("CreationError: Service name cannot be null");
+        if (service.getName() == null || service.getName().isBlank()) {
+            throw new IllegalArgumentException(
+                    "CreationError: Service name cannot be null");
         }
         serviceRepository.update(service);
     }
 
-    public void delete (Service service) {
+    public void delete(Service service) {
         serviceRepository.delete(service);
     }
 }

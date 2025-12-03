@@ -1,7 +1,9 @@
 package fr.awu.annuaire;
 
 import fr.awu.annuaire.model.Service;
+import fr.awu.annuaire.model.Site;
 import fr.awu.annuaire.repository.ServiceRepository;
+import fr.awu.annuaire.service.SiteService;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -15,7 +17,8 @@ public class App extends Application {
         var javaVersion = SystemInfo.javaVersion();
         var javafxVersion = SystemInfo.javafxVersion();
 
-        var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
+        var label = new Label("Hello, JavaFX " + javafxVersion
+                + ", running on Java " + javaVersion + ".");
         var scene = new Scene(new StackPane(label), 640, 480);
         stage.setScene(scene);
         stage.show();
@@ -25,6 +28,10 @@ public class App extends Application {
         Service service = new Service("Informatique");
         ServiceRepository serviceRepository = new ServiceRepository();
         serviceRepository.save(service);
+        Site s = new Site("Lyon");
+        SiteService siteService = new SiteService();
+        siteService.save(s);
+        siteService.getById(s.getId());
         launch();
     }
 

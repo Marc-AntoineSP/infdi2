@@ -1,6 +1,7 @@
 module fr.awu.annuaire {
     requires javafx.controls;
     requires javafx.fxml;
+
     exports fr.awu.annuaire.enums;
 
     requires java.sql;
@@ -15,7 +16,7 @@ module fr.awu.annuaire {
 
     exports fr.awu.annuaire;
     exports fr.awu.annuaire.model;
-    // exports fr.awu.annuaire.service;
+    exports fr.awu.annuaire.service;
     exports fr.awu.annuaire.repository;
 
     opens fr.awu.annuaire to javafx.fxml;
@@ -23,7 +24,7 @@ module fr.awu.annuaire {
 
     opens fr.awu.annuaire.model
             to org.hibernate.orm.core;
-    // opens fr.awu.annuaire.service to org.hibernate.orm.core;
+    opens fr.awu.annuaire.service to org.hibernate.orm.core;
 
     opens fr.awu.annuaire.repository to org.hibernate.orm.core;
 

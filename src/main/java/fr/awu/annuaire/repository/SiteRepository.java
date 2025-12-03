@@ -11,29 +11,40 @@ import fr.awu.annuaire.utils.HibernateUtil;
 public class SiteRepository {
 
     public void save(Site service) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory()
+                .openSession()) {
             Transaction tx = session.beginTransaction();
             session.persist(service);
             tx.commit();
         }
     }
-    
+
     public List<Site> getAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory()
+                .openSession()) {
             return session.createQuery("from Site", Site.class).list();
         }
     }
-    
+
+    public Site getById(int id) {
+        try (Session session = HibernateUtil.getSessionFactory()
+                .openSession()) {
+            return session.get(Site.class, id);
+        }
+    }
+
     public void update(Site service) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory()
+                .openSession()) {
             Transaction tx = session.beginTransaction();
             session.merge(service);
             tx.commit();
         }
     }
-    
-    public void delete (Site service) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+    public void delete(Site service) {
+        try (Session session = HibernateUtil.getSessionFactory()
+                .openSession()) {
             Transaction tx = session.beginTransaction();
             session.remove(service);
             tx.commit();

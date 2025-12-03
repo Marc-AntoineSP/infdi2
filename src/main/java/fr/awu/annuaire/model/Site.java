@@ -17,11 +17,11 @@ public class Site implements IEntity {
 
     private String ville;
 
-    protected Site(){
-        //Hibernate
+    protected Site() {
+        // Hibernate
     }
 
-    public Site(String ville){
+    public Site(String ville) {
         this.ville = ville;
     }
 
@@ -64,5 +64,5 @@ public class Site implements IEntity {
             return false;
         return true;
     }
-    
+
 }
