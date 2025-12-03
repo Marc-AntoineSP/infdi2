@@ -14,8 +14,8 @@ class SiteTest {
         Site site = new Site();
         Site site2 = new Site("Sans setter");
         site.setVille("Paris");
-        assert site.getVille().equals("Paris");
-        assert site2.getVille().equals("Sans setter");
+        assertEquals("Paris", site.getVille());
+        assertEquals("Sans setter", site2.getVille());
     }
 
     @Test
@@ -23,7 +23,7 @@ class SiteTest {
         Site site = new Site();
         site.setVille("Paris");
         siteService.save(site);
-        assert siteService.getAll().contains(site);
+        assertTrue(siteService.getAll().contains(site));
     }
 
     @Test

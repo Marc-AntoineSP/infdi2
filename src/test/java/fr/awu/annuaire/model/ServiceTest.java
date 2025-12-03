@@ -14,8 +14,8 @@ class ServiceTest {
         Service service = new Service();
         Service service2 = new Service("Sans setter");
         service.setName("Informatique");
-        assert service.getName().equals("Informatique");
-        assert service2.getName().equals("Sans setter");
+        assertEquals("Informatique", service.getName());
+        assertEquals("Sans setter", service2.getName());
     }
     
     @Test
@@ -23,7 +23,7 @@ class ServiceTest {
         Service service = new Service();
         service.setName("Informatique");
         serviceService.save(service);
-        assert serviceService.getAll().contains(service);
+        assertTrue(serviceService.getAll().contains(service));
     }
     
     @Test
