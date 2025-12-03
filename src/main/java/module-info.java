@@ -13,6 +13,9 @@ module fr.awu.annuaire {
     requires itextpdf;
     requires jbcrypt;
     requires jakarta.mail;
+    requires org.hibernate.validator;
+    requires jakarta.el;
+    requires jakarta.validation;
 
     exports fr.awu.annuaire;
     exports fr.awu.annuaire.model;
@@ -23,7 +26,7 @@ module fr.awu.annuaire {
     // opens fr.awu.annuaire.controller to javafx.fxml;
 
     opens fr.awu.annuaire.model
-            to org.hibernate.orm.core;
+            to org.hibernate.orm.core, org.hibernate.validator;
     opens fr.awu.annuaire.service to org.hibernate.orm.core;
 
     opens fr.awu.annuaire.repository to org.hibernate.orm.core;

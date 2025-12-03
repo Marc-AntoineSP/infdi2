@@ -22,10 +22,25 @@
         <hibernate.version>6.6.0.Final</hibernate.version>
         <h2.version>2.2.224</h2.version>
 
+        <hibernate.validator.version>9.1.0.Final</hibernate.validator.version>
+        <jakarta.el.version>6.0.0</jakarta.el.version>
+
         <main.class>fr.awu.annuaire.App</main.class>
     </properties>
 
     <dependencies>
+        <!-- Implémentation Bean Validation -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+        </dependency>
+        <!-- Optionnel mais recommandé pour l’interpolation de messages {…} -->
+        <dependency>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>${jakarta.el.version}</version>
+        </dependency>
         <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
