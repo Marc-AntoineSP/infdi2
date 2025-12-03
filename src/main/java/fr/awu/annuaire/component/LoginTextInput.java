@@ -33,11 +33,19 @@ public class LoginTextInput {
     public Parent render() {
         VBox inputBox = new VBox();
         inputBox.getStyleClass().add("login-text-input-vbox");
+        inputBox.setMaxWidth(Double.MAX_VALUE);
+        inputBox.setFillWidth(true);
+        
         Label labelNode = new Label(label);
         labelNode.getStyleClass().add("login-text-input-label");
+        labelNode.setMaxWidth(Double.MAX_VALUE);
+        
         TextField textField = new TextField();
         textField.getStyleClass().add("login-text-input-textfield");
         textField.setPromptText(placeholder);
+        textField.setMaxWidth(Double.MAX_VALUE);
+        textField.setPrefWidth(400); // Set a preferred width to ensure it expands
+        
         inputBox.getChildren().addAll(labelNode, textField);
         return inputBox;
     }

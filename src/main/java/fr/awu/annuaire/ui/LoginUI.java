@@ -1,13 +1,11 @@
 package fr.awu.annuaire.ui;
 
-import fr.awu.annuaire.component.ButtonPrimary;
-import fr.awu.annuaire.component.ButtonSecondary;
 import fr.awu.annuaire.component.LoginButtonGroup;
 import fr.awu.annuaire.component.LoginTextInput;
 import fr.awu.annuaire.service.AuthService;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 public class LoginUI {
     private AuthService authService;
@@ -16,9 +14,16 @@ public class LoginUI {
         this.authService = authService;
     }
 
-    public Parent render() {
+    public GridPane render() {
         GridPane root = new GridPane();
         root.getStyleClass().add("login-ui-gridpane");
+        root.setMaxWidth(Double.MAX_VALUE);
+        
+        ColumnConstraints column = new ColumnConstraints();
+        column.setHgrow(Priority.ALWAYS);
+        column.setFillWidth(true);
+        root.getColumnConstraints().add(column);
+        
         LoginTextInput emailInput = new LoginTextInput("Email", "Enter your email");
         LoginTextInput passwordInput = new LoginTextInput("Password", "Enter your password");
         root.add(emailInput.render(), 0, 0, 1, 1);

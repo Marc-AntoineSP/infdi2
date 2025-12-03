@@ -1,15 +1,25 @@
 package fr.awu.annuaire;
 
+import atlantafx.base.theme.CupertinoDark;
+import atlantafx.base.theme.Dracula;
+import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.NordLight;
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
 import fr.awu.annuaire.service.AuthService;
 import fr.awu.annuaire.ui.LoginUI;
 import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -28,9 +38,21 @@ public class App extends Application {
         topBar.getItems().addAll(spacer, label, spacer2);
         root.setTop(topBar);
         LoginUI loginUI = new LoginUI(new AuthService());
-        root.setCenter(loginUI.render());
+        
+        GridPane loginView = loginUI.render();
+        StackPane centerPane = new StackPane(loginView);
+
+        root.setCenter(centerPane);
         Scene scene = new Scene(root, 640, 480);
+        centerPane.setAlignment(Pos.CENTER);
+        loginView.maxWidthProperty().bind(centerPane.widthProperty().multiply(0.6));
+
+        loginView.maxHeightProperty().bind(centerPane.heightProperty().multiply(0.6));
         scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
+        scene.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
+        // scene.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
+        // scene.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+        // scene.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
         stage.setScene(scene);
         stage.show();
     }
