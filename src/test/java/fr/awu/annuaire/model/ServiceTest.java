@@ -8,7 +8,7 @@ import fr.awu.annuaire.service.ServiceService;
 
 class ServiceTest {
     private ServiceService serviceService = new ServiceService();
-
+    
     @Test
     void createServiceTestShouldSuccess(){
         Service service = new Service();
@@ -17,7 +17,7 @@ class ServiceTest {
         assert service.getName().equals("Informatique");
         assert service2.getName().equals("Sans setter");
     }
-
+    
     @Test
     void addServiceToDatabaseTestShouldSuccess(){
         Service service = new Service();
@@ -25,7 +25,7 @@ class ServiceTest {
         serviceService.save(service);
         assert serviceService.getAll().contains(service);
     }
-
+    
     @Test
     void addServiceToDatabaseTestShouldFail(){
         Service service = new Service("");

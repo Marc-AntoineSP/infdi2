@@ -1,9 +1,12 @@
 package fr.awu.annuaire;
 
+import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.model.Service;
 import fr.awu.annuaire.model.Site;
 import fr.awu.annuaire.repository.ServiceRepository;
+import fr.awu.annuaire.service.PersonService;
 import fr.awu.annuaire.service.SiteService;
+import fr.awu.annuaire.utils.PopulateDB;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -11,7 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class App extends Application {
-
+    private static PersonService personService = new PersonService();
     @Override
     public void start(Stage stage) {
         var javaVersion = SystemInfo.javaVersion();
@@ -25,13 +28,9 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        Service service = new Service("Informatique");
-        ServiceRepository serviceRepository = new ServiceRepository();
-        serviceRepository.save(service);
-        Site s = new Site("Lyon");
-        SiteService siteService = new SiteService();
-        siteService.save(s);
-        siteService.getById(s.getId());
+        PopulateDB.populate();
+        System.out.println("App started.");
+        System.out.println(personService.getAll().size() + " persons in database.");
         launch();
     }
 
