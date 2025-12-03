@@ -11,7 +11,7 @@ public class StartController {
  *  On load depuis l'API
  *  On balance tout dans la list de l'init pour les users.
  *  On load la page de connexion.
- * //TODO: Ajouter la gestion de la scene de connexion.
+ *  TODO: Ajouter la gestion de la scene de connexion.
  */
     public StartController(List<Person> persons, PersonService personService) {
         PopulateDB.populate();
