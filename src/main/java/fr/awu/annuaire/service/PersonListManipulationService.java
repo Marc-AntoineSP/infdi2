@@ -12,14 +12,20 @@ public class PersonListManipulationService {
     }
 
     public List<Person> filterByName(String name) {
-        return this.personList.stream().filter(p -> (p.getFirstName().contains(name) || p.getFirstName().contains(name))).toList();
+        return this.personList.stream()
+                .filter(p -> (p.getFirstName().contains(name)
+                        || p.getFirstName().contains(name)))
+                .toList();
     }
 
     public List<Person> filterByService(String service) {
-        return this.personList.stream().filter(p -> p.getService().getName().contains(service)).toList();
+        return this.personList.stream()
+                .filter(p -> p.getService().getName().contains(service))
+                .toList();
     }
 
     public List<Person> filterBySite(String site) {
-        return this.personList.stream().filter(p -> p.getSite().getVille().contains(site)).toList();
+        return this.personList.stream()
+                .filter(p -> p.getSite().getVille().contains(site)).toList();
     }
 }
