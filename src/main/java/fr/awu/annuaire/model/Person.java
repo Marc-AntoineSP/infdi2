@@ -30,9 +30,9 @@ public abstract class Person implements IEntity{
     private String lastName;
     private String email;
     @Column(name = "home_phone")
-    private String homePhone;
+    private int homePhone;
     @Column(name = "mobile_phone")
-    private String mobilePhone;
+    private int mobilePhone;
     @ManyToOne
     private Service service;
     @ManyToOne
@@ -46,7 +46,7 @@ public abstract class Person implements IEntity{
         //Hibernate
     }
 
-    protected Person(String firstName, String lastName, String email, String homePhone, String mobilePhone,
+    protected Person(String firstName, String lastName, String email, int homePhone, int mobilePhone,
             Service service, Site site, Roles role, String motDePasseEnClair) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -83,19 +83,19 @@ public abstract class Person implements IEntity{
         this.email = email;
     }
 
-    public String getHomePhone() {
+    public int getHomePhone() {
         return homePhone;
     }
 
-    public void setHomePhone(String homePhone) {
+    public void setHomePhone(int homePhone) {
         this.homePhone = homePhone;
     }
 
-    public String getMobilePhone() {
+    public int getMobilePhone() {
         return mobilePhone;
     }
 
-    public void setMobilePhone(String mobilePhone) {
+    public void setMobilePhone(int mobilePhone) {
         this.mobilePhone = mobilePhone;
     }
 

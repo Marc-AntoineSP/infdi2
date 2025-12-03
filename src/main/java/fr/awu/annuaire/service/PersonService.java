@@ -13,6 +13,24 @@ public class PersonService {
     }
 
     public void save(Person person) {
+        if(person.getFirstName() == null || person.getFirstName().isBlank()) {
+            throw new IllegalArgumentException("CreationError: Person first name cannot be null");
+        }
+        if(person.getLastName() == null || person.getLastName().isBlank()) {
+            throw new IllegalArgumentException("CreationError: Person last name cannot be null");
+        }
+        if(person.getEmail() == null || person.getEmail().isBlank()) {
+            throw new IllegalArgumentException("CreationError: Person email cannot be null");
+        }
+        if((person.getHomePhone() == 0) && (person.getMobilePhone() == 0)) {
+            throw new IllegalArgumentException("CreationError: Person phone number cannot be null");
+        }
+        if(person.getService() == null || person.getService().getName().isBlank()) {
+            throw new IllegalArgumentException("CreationError: Person service cannot be null");
+        }
+        if(person.getSite() == null || person.getSite().getVille().isBlank()) {
+            throw new IllegalArgumentException("CreationError: Person site cannot be null");
+        }
         this.personRepository.save(person);
     }
     
@@ -34,7 +52,7 @@ public class PersonService {
         if(person.getEmail() == null || person.getEmail().isBlank()) {
             throw new IllegalArgumentException("CreationError: Person email cannot be null");
         }
-        if((person.getHomePhone() == null || person.getHomePhone().isBlank()) && (person.getMobilePhone() == null || person.getMobilePhone().isBlank())) {
+        if((person.getHomePhone() == 0) && (person.getMobilePhone() == 0)) {
             throw new IllegalArgumentException("CreationError: Person phone number cannot be null");
         }
         if(person.getService() == null || person.getService().getName().isBlank()) {
