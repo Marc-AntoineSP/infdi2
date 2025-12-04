@@ -7,10 +7,12 @@ import java.util.stream.Collectors;
 
 import fr.awu.annuaire.component.ButtonSecondary;
 import fr.awu.annuaire.component.DialogComponent;
+import fr.awu.annuaire.errors.PersonValidationException;
 import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.model.Service;
 import fr.awu.annuaire.model.Site;
 import fr.awu.annuaire.service.AuthService;
+import fr.awu.annuaire.service.PersonService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -33,11 +35,13 @@ public class MainUI {
     private final ObservableList<Person> tablePersonList;
     private final AuthService authService;
     private Runnable onLogout;
+    private PersonService personService;
 
-    public MainUI(ObservableList<Person> tablePersonList, AuthService authService, Runnable onLogout) {
+    public MainUI(ObservableList<Person> tablePersonList, AuthService authService, Runnable onLogout, PersonService personService) {
         this.tablePersonList = tablePersonList;
         this.authService = authService;
         this.onLogout = onLogout;
+        this.personService = personService;
     }
 
     public Parent render() {
@@ -174,7 +178,18 @@ public class MainUI {
                     System.out.println("CLICK");
                     Person data = row.getItem();
                     boolean isAdmin = authService.checkRoleAdmin();
-                    DialogComponent dialog = new DialogComponent(data, isAdmin);
+                    DialogComponent dialog = new DialogComponent(data, isAdmin, updatedPerson -> {
+                    try {
+                        personService.update(updatedPerson);
+                        tableView.refresh();
+                    } catch (PersonValidationException ex) {
+                        System.out.println("Validation error: " + ex.getErrors());
+                    }
+                },
+                deletedPerson -> {
+                    personService.delete(deletedPerson);
+                    tablePersonList.remove(deletedPerson);
+                });
                     dialog.showAndWait();
                     tableView.refresh();
                 }

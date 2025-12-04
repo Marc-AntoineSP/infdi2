@@ -78,7 +78,7 @@ public class App extends Application {
                 authService.logout();
                 centerPane.getChildren().setAll(loginView[0]);
             };
-            MainUI mainUI = new MainUI(this.personObservableList, authService, onLogout);
+            MainUI mainUI = new MainUI(this.personObservableList, authService, onLogout, personService);
             Parent mainView = mainUI.render();
             centerPane.getChildren().setAll(mainView);
         });
