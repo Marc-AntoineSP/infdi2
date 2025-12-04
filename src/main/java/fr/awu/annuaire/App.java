@@ -9,6 +9,7 @@ import atlantafx.base.theme.NordDark;
 import atlantafx.base.theme.NordLight;
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
+import fr.awu.annuaire.model.Admin;
 import fr.awu.annuaire.model.Employee;
 import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.service.AuthService;
@@ -50,7 +51,8 @@ public class App extends Application {
 
         Person testEmployee = new Employee("Test", "Employee", "test.employee@example.com", "0123456789", "0123456789", serviceService.getAll().get(0), siteService.getAll().get(0), "password123");
         personService.save(testEmployee);
-
+        Person testAdmin = new Admin("Test", "Admin", "test.admin@example.com", "0123456789", "0123456789", serviceService.getAll().get(0), siteService.getAll().get(0), "adminpassword");
+        personService.save(testAdmin);
         System.out.println("Personne 1: " + mockPersons.get(0).getEmail() + " - " + mockPersons.get(0).getHashedPassword());
 
         BorderPane root = new BorderPane();
