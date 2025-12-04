@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.awu.annuaire.component.ButtonSecondary;
+import fr.awu.annuaire.component.DialogComponent;
 import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.model.Service;
 import fr.awu.annuaire.model.Site;
@@ -18,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -164,6 +166,21 @@ public class MainUI {
 
         VBox root = new VBox(10, horizontalBoxLogout, searchAndFilters, tableView);
         VBox.setVgrow(tableView, Priority.ALWAYS);
+
+        tableView.setRowFactory(t -> {
+            TableRow<Person> row = new TableRow<>();
+            row.setOnMouseClicked(e -> {
+                if(e.getClickCount() == 2){
+                    System.out.println("CLICK");
+                    Person data = row.getItem();
+                    boolean isAdmin = authService.checkRoleAdmin();
+                    DialogComponent dialog = new DialogComponent(data, isAdmin);
+                    dialog.showAndWait();
+                    tableView.refresh();
+                }
+            });
+            return row;
+        });
 
         return root;
     }
