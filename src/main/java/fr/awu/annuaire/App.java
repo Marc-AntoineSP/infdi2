@@ -3,12 +3,7 @@ package fr.awu.annuaire;
 import java.util.ArrayList;
 import java.util.List;
 
-import atlantafx.base.theme.CupertinoDark;
 import atlantafx.base.theme.Dracula;
-import atlantafx.base.theme.NordDark;
-import atlantafx.base.theme.NordLight;
-import atlantafx.base.theme.PrimerDark;
-import atlantafx.base.theme.PrimerLight;
 import fr.awu.annuaire.model.Admin;
 import fr.awu.annuaire.model.Employee;
 import fr.awu.annuaire.model.Person;
@@ -36,7 +31,8 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-    ObservableList<Person> personObservableList = javafx.collections.FXCollections.observableArrayList();
+    ObservableList<Person> personObservableList = javafx.collections.FXCollections
+            .observableArrayList();
     PersonService personService = new PersonService();
     AuthService authService = new AuthService(personService);
     List<Person> mockPersons = new ArrayList<>();
@@ -49,18 +45,17 @@ public class App extends Application {
         PopulateDB.populate();
         mockPersons.addAll(personService.getAll());
 
-        // Only add test users if they don't already exist
-        if (personService.findByEmail("test.employee@example.com") == null) {
-            Person testEmployee = new Employee("Test", "Employee", "test.employee@example.com", "0123456789", "0123456789", serviceService.getAll().get(0), siteService.getAll().get(0), "password123");
-            personService.save(testEmployee);
-        }
-        
-        if (personService.findByEmail("test.admin@example.com") == null) {
-            Person testAdmin = new Admin("Test", "Admin", "test.admin@example.com", "0123456789", "0123456789", serviceService.getAll().get(0), siteService.getAll().get(0), "adminpassword");
-            personService.save(testAdmin);
-        }
-        
-        System.out.println("Personne 1: " + mockPersons.get(0).getEmail() + " - " + mockPersons.get(0).getHashedPassword());
+        Person testEmployee = new Employee("Test", "Employee",
+                "test.employee@example.com", "0123456789", "0123456789",
+                serviceService.getAll().get(0), siteService.getAll().get(0),
+                "password123");
+        personService.save(testEmployee);
+        Person testAdmin = new Admin("Test", "Admin", "test.admin@example.com",
+                "0123456789", "0123456789", serviceService.getAll().get(0),
+                siteService.getAll().get(0), "adminpassword");
+        personService.save(testAdmin);
+        System.out.println("Personne 1: " + mockPersons.get(0).getEmail()
+                + " - " + mockPersons.get(0).getHashedPassword());
 
         BorderPane root = new BorderPane();
         ToolBar topBar = new ToolBar();
@@ -74,36 +69,43 @@ public class App extends Application {
         topBar.getItems().addAll(spacer, label, spacer2);
         root.setTop(topBar);
 
-        
         StackPane centerPane = new StackPane();
         final GridPane[] loginView = new GridPane[1];
         LoginUI loginUI = new LoginUI(authService, loggedPerson -> {
-            System.out.println("User " + loggedPerson.getFirstName() + " " + loggedPerson.getLastName() + " logged in.");
+            System.out.println("User " + loggedPerson.getFirstName() + " "
+                    + loggedPerson.getLastName() + " logged in.");
             this.personObservableList.setAll(personService.getAll());
 
             Runnable onLogout = () -> {
                 authService.logout();
                 centerPane.getChildren().setAll(loginView[0]);
             };
-            MainUI mainUI = new MainUI(this.personObservableList, authService, onLogout, personService, siteService, serviceService);
+            MainUI mainUI = new MainUI(this.personObservableList, authService,
+                    onLogout, personService, siteService, serviceService);
             Parent mainView = mainUI.render();
             centerPane.getChildren().setAll(mainView);
         });
-        
+
         loginView[0] = loginUI.render();
         centerPane.getChildren().add(loginView[0]);
 
         root.setCenter(centerPane);
         Scene scene = new Scene(root, 640, 480);
         centerPane.setAlignment(Pos.CENTER);
-        loginView[0].maxWidthProperty().bind(centerPane.widthProperty().multiply(0.6));
+        loginView[0].maxWidthProperty()
+                .bind(centerPane.widthProperty().multiply(0.6));
 
-        loginView[0].maxHeightProperty().bind(centerPane.heightProperty().multiply(0.6));
-        scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
+        loginView[0].maxHeightProperty()
+                .bind(centerPane.heightProperty().multiply(0.6));
+        scene.getStylesheets()
+                .add(getClass().getResource("/app.css").toExternalForm());
         scene.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
-        // scene.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
-        // scene.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
-        // scene.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+        // scene.setUserAgentStylesheet(new
+        // CupertinoDark().getUserAgentStylesheet());
+        // scene.setUserAgentStylesheet(new
+        // NordDark().getUserAgentStylesheet());
+        // scene.setUserAgentStylesheet(new
+        // NordLight().getUserAgentStylesheet());
         stage.setScene(scene);
         stage.show();
     }

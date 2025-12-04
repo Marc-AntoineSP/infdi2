@@ -2,6 +2,8 @@ package fr.awu.annuaire.model;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -46,9 +48,11 @@ public abstract class Person implements IEntity {
     @Length(min = 10, max = 10, message = "Phone = 10 digits")
     private String mobilePhone;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Service cannot be null")
     private Service service;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Site cannot be null")
     private Site site;
     @Enumerated(EnumType.STRING)

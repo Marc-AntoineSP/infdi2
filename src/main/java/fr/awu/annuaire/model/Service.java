@@ -1,10 +1,15 @@
 package fr.awu.annuaire.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.awu.annuaire.interfaces.IEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,11 +22,14 @@ public class Service implements IEntity {
 
     private String name;
 
-    protected Service(){
-        //Hibernate
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Person> persons = new ArrayList<>();
+
+    protected Service() {
+        // Hibernate
     }
 
-    public Service(String name){
+    public Service(String name) {
         this.name = name;
     }
 
@@ -32,7 +40,7 @@ public class Service implements IEntity {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public int getId() {
         return id;
     }
@@ -65,5 +73,4 @@ public class Service implements IEntity {
         return true;
     }
 
-    
 }

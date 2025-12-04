@@ -1,10 +1,15 @@
 package fr.awu.annuaire.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.awu.annuaire.interfaces.IEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,6 +21,9 @@ public class Site implements IEntity {
     private int id;
 
     private String ville;
+
+    @OneToMany(mappedBy = "site", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Person> persons = new ArrayList<>();
 
     protected Site() {
         // Hibernate

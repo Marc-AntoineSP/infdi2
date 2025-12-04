@@ -8,6 +8,7 @@ import fr.awu.annuaire.component.ButtonPrimary;
 import fr.awu.annuaire.component.ButtonSecondary;
 import fr.awu.annuaire.component.DialogComponent;
 import fr.awu.annuaire.component.DialogOption;
+import fr.awu.annuaire.component.ServiceSiteDialog;
 import fr.awu.annuaire.model.Employee;
 import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.model.Service;
@@ -51,6 +52,12 @@ public class MainUI {
     private ServiceService serviceService;
     private PdfExportService pdfExportService;
 
+    private MenuButton siteFilterButton;
+    private MenuButton serviceFilterButton;
+    private Set<String> selectedServices;
+    private Set<String> selectedSites;
+    private Runnable applyFilter;
+
     public MainUI(ObservableList<Person> tablePersonList,
             AuthService authService, Runnable onLogout,
             PersonService personService, SiteService siteService,
@@ -72,26 +79,11 @@ public class MainUI {
         TextField searchField = new TextField();
         searchField.setPromptText("Recherche (nom, prénom");
 
-        Set<String> selectedServices = new HashSet<>();
-        Set<String> selectedSites = new HashSet<>();
+        selectedServices = new HashSet<>();
+        selectedSites = new HashSet<>();
 
-        List<String> services = tablePersonList.stream()
-                .map(p -> p.getService() != null ? p.getService().getName()
-                        : "")
-                .filter(s -> !s.isBlank())
-                .distinct()
-                .sorted()
-                .toList();
-
-        List<String> sites = tablePersonList.stream()
-                .map(p -> p.getSite() != null ? p.getSite().getVille() : "")
-                .filter(s -> !s.isBlank())
-                .distinct()
-                .sorted()
-                .toList();
-
-        MenuButton siteFilterButton = new MenuButton("Site");
-        MenuButton serviceFilterButton = new MenuButton("Service");
+        siteFilterButton = new MenuButton("Site");
+        serviceFilterButton = new MenuButton("Service");
 
         TableView<Person> tableView = new TableView<>();
         tableView.setColumnResizePolicy(
@@ -184,7 +176,7 @@ public class MainUI {
         FilteredList<Person> filteredPerson = new FilteredList<>(
                 tablePersonList, p -> true);
 
-        Runnable applyFilter = () -> {
+        applyFilter = () -> {
             String query = normalize(searchField.getText());
 
             filteredPerson.setPredicate(person -> {
@@ -223,33 +215,8 @@ public class MainUI {
         searchField.textProperty().addListener(
                 (observable, oldValue, newValue) -> applyFilter.run());
 
-        for (String serviceName : services) {
-            CheckMenuItem item = new CheckMenuItem(serviceName);
-            item.selectedProperty()
-                    .addListener((obs, wasSelected, isSelected) -> {
-                        if (isSelected != null) {
-                            selectedServices.add(serviceName);
-                        } else {
-                            selectedServices.remove(serviceName);
-                        }
-                        applyFilter.run();
-                    });
-            serviceFilterButton.getItems().add(item);
-        }
-
-        for (String siteName : sites) {
-            CheckMenuItem item = new CheckMenuItem(siteName);
-            item.selectedProperty()
-                    .addListener((obs, wasSelected, isSelected) -> {
-                        if (isSelected != null) {
-                            selectedSites.add(siteName);
-                        } else {
-                            selectedSites.remove(siteName);
-                        }
-                        applyFilter.run();
-                    });
-            siteFilterButton.getItems().add(item);
-        }
+        // Initial population of filter menus
+        refreshFilterMenus();
 
         applyFilter.run();
 
@@ -261,8 +228,12 @@ public class MainUI {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        HBox horizontalBoxLogout = new HBox(8, addButton.getButton(), spacer,
-                logoutButton.getButton());
+        ButtonSecondary manageButton = new ButtonSecondary(
+                "Gérer Services/Sites");
+        manageButton.getButton().setOnAction(e -> openManageEntitiesDialog());
+
+        HBox horizontalBoxLogout = new HBox(8, addButton.getButton(),
+                manageButton.getButton(), spacer, logoutButton.getButton());
         logoutButton.getButton().setOnAction(e -> onLogout.run());
         HBox searchAndFilters = new HBox(8, searchField, siteFilterButton,
                 serviceFilterButton);
@@ -385,9 +356,6 @@ public class MainUI {
                 return;
             }
 
-            siteService.save(site);
-            serviceService.save(service);
-
             Employee newEmployee = new Employee(
                     firstName,
                     lastName,
@@ -411,5 +379,70 @@ public class MainUI {
         Label lbl = new Label(label + " : ");
         HBox row = new HBox(10, lbl, field);
         return row;
+    }
+
+    private void openManageEntitiesDialog() {
+        ServiceSiteDialog dialog = new ServiceSiteDialog(serviceService,
+                siteService);
+        dialog.showAndWait();
+
+        tablePersonList.setAll(personService.getAll());
+
+        refreshFilterMenus();
+    }
+
+    private void refreshFilterMenus() {
+        serviceFilterButton.getItems().clear();
+        siteFilterButton.getItems().clear();
+
+        List<String> services = tablePersonList.stream()
+                .map(p -> p.getService() != null ? p.getService().getName()
+                        : "")
+                .filter(s -> !s.isBlank())
+                .distinct()
+                .sorted()
+                .toList();
+
+        List<String> sites = tablePersonList.stream()
+                .map(p -> p.getSite() != null ? p.getSite().getVille() : "")
+                .filter(s -> !s.isBlank())
+                .distinct()
+                .sorted()
+                .toList();
+
+        selectedServices.retainAll(services);
+        selectedSites.retainAll(sites);
+
+        for (String serviceName : services) {
+            CheckMenuItem item = new CheckMenuItem(serviceName);
+            item.setSelected(selectedServices.contains(serviceName));
+            item.selectedProperty()
+                    .addListener((obs, wasSelected, isSelected) -> {
+                        if (isSelected) {
+                            selectedServices.add(serviceName);
+                        } else {
+                            selectedServices.remove(serviceName);
+                        }
+                        applyFilter.run();
+                    });
+            serviceFilterButton.getItems().add(item);
+        }
+
+        for (String siteName : sites) {
+            CheckMenuItem item = new CheckMenuItem(siteName);
+            item.setSelected(selectedSites.contains(siteName));
+            item.selectedProperty()
+                    .addListener((obs, wasSelected, isSelected) -> {
+                        if (isSelected) {
+                            selectedSites.add(siteName);
+                        } else {
+                            selectedSites.remove(siteName);
+                        }
+                        applyFilter.run();
+                    });
+            siteFilterButton.getItems().add(item);
+        }
+
+        applyFilter.run();
     }
 }
