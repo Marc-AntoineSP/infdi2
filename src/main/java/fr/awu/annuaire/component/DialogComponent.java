@@ -20,8 +20,6 @@ public class DialogComponent {
     private Consumer<Person> onDelete;
     private List<Service> services;
     private List<Site> sites;
-
-    // Store field references for validation
     private DialogField firstNameField;
     private DialogField lastNameField;
     private DialogField emailField;
@@ -76,12 +74,14 @@ public class DialogComponent {
                 this.person.getMobilePhone(), isAdmin,
                 phone -> phone == null || phone.trim().isEmpty()
                         || phone.matches("^\\d{10}$"),
-                "Le GSM doit contenir exactement 10 chiffres");
+                "Le GSM doit contenir exactement 10 chiffres",
+                true); // digits only
         homePhoneField = new DialogField("Socotel",
                 this.person.getHomePhone(), isAdmin,
                 phone -> phone == null || phone.isEmpty()
                         || phone.matches("^\\d{10}$"),
-                "Le Socotel doit contenir exactement 10 chiffres");
+                "Le Socotel doit contenir exactement 10 chiffres",
+                true); // digits only
 
         DialogOption<Service> serviceField = new DialogOption<>(
                 "Service",

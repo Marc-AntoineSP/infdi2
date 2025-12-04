@@ -6,11 +6,13 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public class DialogField {
     private String label;
@@ -25,22 +27,44 @@ public class DialogField {
     private Button editButton;
     private Predicate<String> validator;
     private String errorMessage;
+    private boolean digitsOnly;
 
     public DialogField(String label, String value, boolean isEditable) {
-        this(label, value, isEditable, null, null);
+        this(label, value, isEditable, null, null, false);
     }
 
     public DialogField(String label, String value, boolean isEditable,
             Predicate<String> validator, String errorMessage) {
+        this(label, value, isEditable, validator, errorMessage, false);
+    }
+
+    public DialogField(String label, String value, boolean isEditable,
+            Predicate<String> validator, String errorMessage,
+            boolean digitsOnly) {
         this.label = label;
         this.value = value;
         this.isEditable = isEditable;
         this.validator = validator;
         this.errorMessage = errorMessage;
+        this.digitsOnly = digitsOnly;
 
         this.labelNode = new Label(this.label + " : ");
         this.valueLabel = new Label(this.value != null ? this.value : "");
         this.valueTF = new TextField(this.value != null ? this.value : "");
+
+        // Apply digits-only filter (max 10 digits) if requested
+        if (digitsOnly) {
+            UnaryOperator<TextFormatter.Change> digitsOnlyFilter = change -> {
+                String newText = change.getControlNewText();
+                if (newText.matches("\\d{0,10}")) {
+                    return change;
+                }
+                return null;
+            };
+            this.valueTF.setTextFormatter(
+                    new TextFormatter<>(digitsOnlyFilter));
+        }
+
         this.editButton = new Button("Edit");
         this.errorLabel = new Label();
         this.errorLabel.setTextFill(Color.RED);

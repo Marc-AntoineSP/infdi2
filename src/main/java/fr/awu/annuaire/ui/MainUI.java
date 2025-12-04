@@ -3,6 +3,7 @@ package fr.awu.annuaire.ui;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 import fr.awu.annuaire.component.ButtonPrimary;
 import fr.awu.annuaire.component.ButtonSecondary;
@@ -35,6 +36,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -231,9 +233,13 @@ public class MainUI {
         ButtonSecondary manageButton = new ButtonSecondary(
                 "Gérer Services/Sites");
         manageButton.getButton().setOnAction(e -> openManageEntitiesDialog());
-
-        HBox horizontalBoxLogout = new HBox(8, addButton.getButton(),
-                manageButton.getButton(), spacer, logoutButton.getButton());
+        HBox horizontalBoxLogout;
+        if (authService.checkRoleAdmin()) {
+            horizontalBoxLogout = new HBox(8, addButton.getButton(),
+                    manageButton.getButton(), spacer, logoutButton.getButton());
+        } else {
+            horizontalBoxLogout = new HBox(8, spacer, logoutButton.getButton());
+        }
         logoutButton.getButton().setOnAction(e -> onLogout.run());
         HBox searchAndFilters = new HBox(8, searchField, siteFilterButton,
                 serviceFilterButton);
@@ -288,21 +294,55 @@ public class MainUI {
 
         TextField firstNameField = new TextField();
         firstNameField.setPromptText("Prénom");
+        Label firstNameError = new Label();
+        firstNameError.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+        firstNameError.setVisible(false);
+        firstNameError.setManaged(false);
 
         TextField lastNameField = new TextField();
         lastNameField.setPromptText("Nom");
+        Label lastNameError = new Label();
+        lastNameError.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+        lastNameError.setVisible(false);
+        lastNameError.setManaged(false);
 
         TextField emailField = new TextField();
         emailField.setPromptText("Email");
+        Label emailError = new Label();
+        emailError.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+        emailError.setVisible(false);
+        emailError.setManaged(false);
+
+        UnaryOperator<TextFormatter.Change> digitsOnlyFilter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d{0,10}")) {
+                return change;
+            }
+            return null;
+        };
 
         TextField mobileField = new TextField();
         mobileField.setPromptText("GSM");
+        mobileField.setTextFormatter(new TextFormatter<>(digitsOnlyFilter));
+        Label mobileError = new Label();
+        mobileError.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+        mobileError.setVisible(false);
+        mobileError.setManaged(false);
 
         TextField homePhoneField = new TextField();
         homePhoneField.setPromptText("Socotel");
+        homePhoneField.setTextFormatter(new TextFormatter<>(digitsOnlyFilter));
+        Label homePhoneError = new Label();
+        homePhoneError.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+        homePhoneError.setVisible(false);
+        homePhoneError.setManaged(false);
 
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Mot de passe");
+        Label passwordError = new Label();
+        passwordError.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+        passwordError.setVisible(false);
+        passwordError.setManaged(false);
 
         List<Service> services = serviceService.getAll();
         List<Site> sites = siteService.getAll();
@@ -322,16 +362,150 @@ public class MainUI {
                 Site::getVille);
 
         VBox content = new VBox(10,
-                makeRow("Prénom", firstNameField),
-                makeRow("Nom", lastNameField),
-                makeRow("Email", emailField),
-                makeRow("GSM", mobileField),
-                makeRow("Socotel", homePhoneField),
+                makeRowWithError("Prénom", firstNameField, firstNameError),
+                makeRowWithError("Nom", lastNameField, lastNameError),
+                makeRowWithError("Email", emailField, emailError),
+                makeRowWithError("GSM", mobileField, mobileError),
+                makeRowWithError("Socotel", homePhoneField, homePhoneError),
                 serviceOption.render(),
                 siteOption.render(),
-                makeRow("Mot de passe", passwordField));
+                makeRowWithError("Mot de passe", passwordField, passwordError));
 
         dialog.getDialogPane().setContent(content);
+
+        Button okButton = (Button) dialog.getDialogPane()
+                .lookupButton(ButtonType.OK);
+
+        Runnable validateAll = () -> {
+            boolean isValid = true;
+
+            String firstName = firstNameField.getText().trim();
+            if (firstName.isEmpty()) {
+                firstNameError.setText("Le prénom ne peut pas être vide");
+                firstNameError.setVisible(true);
+                firstNameError.setManaged(true);
+                firstNameField.setStyle(
+                        "-fx-border-color: red; -fx-border-width: 2px;");
+                isValid = false;
+            } else {
+                firstNameError.setVisible(false);
+                firstNameError.setManaged(false);
+                firstNameField.setStyle("");
+            }
+
+            String lastName = lastNameField.getText().trim();
+            if (lastName.isEmpty()) {
+                lastNameError.setText("Le nom ne peut pas être vide");
+                lastNameError.setVisible(true);
+                lastNameError.setManaged(true);
+                lastNameField.setStyle(
+                        "-fx-border-color: red; -fx-border-width: 2px;");
+                isValid = false;
+            } else {
+                lastNameError.setVisible(false);
+                lastNameError.setManaged(false);
+                lastNameField.setStyle("");
+            }
+
+            String email = emailField.getText().trim();
+            if (email.isEmpty() || !email.matches(
+                    "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) { // Regex
+                // prit
+                // sur
+                // internet
+                // pour
+                // les
+                // emails.
+                emailError.setText(
+                        "Email invalide (format: exemple@domaine.com)");
+                emailError.setVisible(true);
+                emailError.setManaged(true);
+                emailField.setStyle(
+                        "-fx-border-color: red; -fx-border-width: 2px;");
+                isValid = false;
+            } else {
+                emailError.setVisible(false);
+                emailError.setManaged(false);
+                emailField.setStyle("");
+            }
+
+            String mobile = mobileField.getText().trim();
+            if (!mobile.isEmpty() && !mobile.matches("^\\d{10}$")) {
+                mobileError
+                        .setText("Le GSM doit contenir exactement 10 chiffres");
+                mobileError.setVisible(true);
+                mobileError.setManaged(true);
+                mobileField.setStyle(
+                        "-fx-border-color: red; -fx-border-width: 2px;");
+                isValid = false;
+            } else {
+                mobileError.setVisible(false);
+                mobileError.setManaged(false);
+                mobileField.setStyle("");
+            }
+
+            String home = homePhoneField.getText().trim();
+            if (!home.isEmpty() && !home.matches("^\\d{10}$")) {
+                homePhoneError.setText(
+                        "Le Socotel doit contenir exactement 10 chiffres");
+                homePhoneError.setVisible(true);
+                homePhoneError.setManaged(true);
+                homePhoneField.setStyle(
+                        "-fx-border-color: red; -fx-border-width: 2px;");
+                isValid = false;
+            } else {
+                homePhoneError.setVisible(false);
+                homePhoneError.setManaged(false);
+                homePhoneField.setStyle("");
+            }
+
+            if (mobile.isEmpty() && home.isEmpty()) {
+                if (mobileError.getText().isEmpty()) {
+                    mobileError
+                            .setText("Au moins un numéro de téléphone requis");
+                    mobileError.setVisible(true);
+                    mobileError.setManaged(true);
+                }
+                if (homePhoneError.getText().isEmpty()) {
+                    homePhoneError
+                            .setText("Au moins un numéro de téléphone requis");
+                    homePhoneError.setVisible(true);
+                    homePhoneError.setManaged(true);
+                }
+                isValid = false;
+            }
+
+            String password = passwordField.getText();
+            if (password.isEmpty()) {
+                passwordError.setText("Le mot de passe ne peut pas être vide");
+                passwordError.setVisible(true);
+                passwordError.setManaged(true);
+                passwordField.setStyle(
+                        "-fx-border-color: red; -fx-border-width: 2px;");
+                isValid = false;
+            } else {
+                passwordError.setVisible(false);
+                passwordError.setManaged(false);
+                passwordField.setStyle("");
+            }
+
+            okButton.setDisable(!isValid);
+        };
+
+        firstNameField.textProperty()
+                .addListener((obs, old, newVal) -> validateAll.run());
+        lastNameField.textProperty()
+                .addListener((obs, old, newVal) -> validateAll.run());
+        emailField.textProperty()
+                .addListener((obs, old, newVal) -> validateAll.run());
+        mobileField.textProperty()
+                .addListener((obs, old, newVal) -> validateAll.run());
+        homePhoneField.textProperty()
+                .addListener((obs, old, newVal) -> validateAll.run());
+        passwordField.textProperty()
+                .addListener((obs, old, newVal) -> validateAll.run());
+
+        validateAll.run();
 
         var result = dialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -341,12 +515,6 @@ public class MainUI {
             String mobile = mobileField.getText().trim();
             String home = homePhoneField.getText().trim();
             String password = passwordField.getText();
-
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()
-                    || password.isEmpty()) {
-                System.out.println("Champs obligatoires manquants");
-                return;
-            }
 
             Service service = serviceOption.getSelectedValue();
             Site site = siteOption.getSelectedValue();
@@ -360,8 +528,8 @@ public class MainUI {
                     firstName,
                     lastName,
                     email,
-                    home,
-                    mobile,
+                    home.isEmpty() ? null : home,
+                    mobile.isEmpty() ? null : mobile,
                     service,
                     site,
                     password);
@@ -371,14 +539,21 @@ public class MainUI {
                 tablePersonList.add(newEmployee);
             } catch (Exception ex) {
                 ex.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur de création");
+                alert.setHeaderText("Impossible de créer la personne");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
             }
         }
     }
 
-    private HBox makeRow(String label, TextField field) {
+    private VBox makeRowWithError(String label, TextField field,
+            Label errorLabel) {
         Label lbl = new Label(label + " : ");
         HBox row = new HBox(10, lbl, field);
-        return row;
+        VBox container = new VBox(5, row, errorLabel);
+        return container;
     }
 
     private void openManageEntitiesDialog() {
