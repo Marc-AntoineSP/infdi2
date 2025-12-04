@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main, evolution]
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 jobs:
   test:
     name: Tests et Build
@@ -31,14 +36,14 @@ jobs:
       - name: Exécution des tests d'intégration
         run: mvn test -Dtest='*IT'
 
-      - name: Rapport de tests
+      - name: 📊 Publication des résultats de tests
         if: always()
-        uses: dorny/test-reporter@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          name: Résultats des tests
-          path: target/surefire-reports/*.xml
-          reporter: java-junit
-          fail-on-error: true
+          files: |
+            target/surefire-reports/*.xml
+          check_name: "Résultats des tests"
+          comment_mode: off
 
       - name: Build du projet
         run: mvn package -DskipTests
