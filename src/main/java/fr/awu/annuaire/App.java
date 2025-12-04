@@ -49,10 +49,17 @@ public class App extends Application {
         PopulateDB.populate();
         mockPersons.addAll(personService.getAll());
 
-        Person testEmployee = new Employee("Test", "Employee", "test.employee@example.com", "0123456789", "0123456789", serviceService.getAll().get(0), siteService.getAll().get(0), "password123");
-        personService.save(testEmployee);
-        Person testAdmin = new Admin("Test", "Admin", "test.admin@example.com", "0123456789", "0123456789", serviceService.getAll().get(0), siteService.getAll().get(0), "adminpassword");
-        personService.save(testAdmin);
+        // Only add test users if they don't already exist
+        if (personService.findByEmail("test.employee@example.com") == null) {
+            Person testEmployee = new Employee("Test", "Employee", "test.employee@example.com", "0123456789", "0123456789", serviceService.getAll().get(0), siteService.getAll().get(0), "password123");
+            personService.save(testEmployee);
+        }
+        
+        if (personService.findByEmail("test.admin@example.com") == null) {
+            Person testAdmin = new Admin("Test", "Admin", "test.admin@example.com", "0123456789", "0123456789", serviceService.getAll().get(0), siteService.getAll().get(0), "adminpassword");
+            personService.save(testAdmin);
+        }
+        
         System.out.println("Personne 1: " + mockPersons.get(0).getEmail() + " - " + mockPersons.get(0).getHashedPassword());
 
         BorderPane root = new BorderPane();

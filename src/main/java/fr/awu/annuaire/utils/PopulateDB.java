@@ -97,6 +97,12 @@ public class PopulateDB {
     }
 
     public static void populate(){
+        // Check if database is already populated
+        if (!personService.getAll().isEmpty()) {
+            System.out.println("Database already populated, skipping...");
+            return;
+        }
+        
         populateServices();
         populateSites();
         String json = fetchPersons();

@@ -12,8 +12,8 @@
     <!-- Dialecte -->
     <property name="hibernate.dialect">org.hibernate.dialect.H2Dialect</property>
 
-    <!-- Schéma en dev -->
-    <property name="hibernate.hbm2ddl.auto">update</property>
+    <!-- Schéma en dev - create-drop recreates schema on each run -->
+    <property name="hibernate.hbm2ddl.auto">create-drop</property>
 
     <!-- Debug SQL -->
     <property name="hibernate.show_sql">true</property>
