@@ -39,6 +39,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.SVGPath;
 
 public class MainUI {
 
@@ -120,7 +121,21 @@ public class MainUI {
         TableColumn<Person, Void> printCol = new TableColumn<>("Actions");
         printCol.setCellFactory(
                 param -> new javafx.scene.control.TableCell<>() {
-                    private final Button printButton = new Button("🖨️");
+                    private final Button printButton = createPrintButton();
+
+                    private Button createPrintButton() {
+                        SVGPath printerIcon = new SVGPath();
+                        printerIcon.setContent(
+                                "M6 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v2a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2zm0 2v2h12V2H8zM4 8v4h2V8H4zm14 0v4h2V8h-2zM8 14v2h8v-2H8z");
+                        printerIcon.setScaleX(1.2);
+                        printerIcon.setScaleY(1.2);
+                        printerIcon.setStyle("-fx-fill: -fx-text-fill;");
+
+                        Button btn = new Button();
+                        btn.setGraphic(printerIcon);
+                        btn.setStyle("-fx-padding: 6 10 6 10;");
+                        return btn;
+                    }
 
                     {
                         printButton.setOnAction(event -> {
