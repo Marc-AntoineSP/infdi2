@@ -72,13 +72,13 @@ public class App extends Application {
         final GridPane[] loginView = new GridPane[1];
         LoginUI loginUI = new LoginUI(authService, loggedPerson -> {
             System.out.println("User " + loggedPerson.getFirstName() + " " + loggedPerson.getLastName() + " logged in.");
-            this.personObservableList.setAll(this.mockPersons);
+            this.personObservableList.setAll(personService.getAll());
 
             Runnable onLogout = () -> {
                 authService.logout();
                 centerPane.getChildren().setAll(loginView[0]);
             };
-            MainUI mainUI = new MainUI(this.personObservableList, authService, onLogout, personService);
+            MainUI mainUI = new MainUI(this.personObservableList, authService, onLogout, personService, siteService, serviceService);
             Parent mainView = mainUI.render();
             centerPane.getChildren().setAll(mainView);
         });
