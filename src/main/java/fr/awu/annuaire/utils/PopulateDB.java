@@ -51,7 +51,7 @@ public class PopulateDB {
     private static String fetchPersons() {
         try(HttpClient client = HttpClient.newHttpClient()){
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create("https://randomuser.me/api/?results=100&nat=fr"))
+                    .uri(java.net.URI.create("https://randomuser.me/api/?results=25&nat=fr"))
                     .build();
             HttpResponse<String> res = client.send(request, HttpResponse.BodyHandlers.ofString());
 

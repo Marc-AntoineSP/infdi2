@@ -16,6 +16,7 @@ import fr.awu.annuaire.service.PersonService;
 import fr.awu.annuaire.service.ServiceService;
 import fr.awu.annuaire.service.SiteService;
 import fr.awu.annuaire.ui.LoginUI;
+import fr.awu.annuaire.ui.MainUI;
 import fr.awu.annuaire.utils.PopulateDB;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -63,12 +64,20 @@ public class App extends Application {
         label.getStyleClass().add("top-bar-label");
         topBar.getItems().addAll(spacer, label, spacer2);
         root.setTop(topBar);
+
+        
+        StackPane centerPane = new StackPane();
+
         LoginUI loginUI = new LoginUI(authService, loggedPerson -> {
             System.out.println("User " + loggedPerson.getFirstName() + " " + loggedPerson.getLastName() + " logged in.");
+            this.personObservableList.setAll(this.mockPersons);
+            MainUI mainUI = new MainUI(this.personObservableList, authService);
+            Parent mainView = mainUI.render();
+            centerPane.getChildren().setAll(mainView);
         });
         
         GridPane loginView = loginUI.render();
-        StackPane centerPane = new StackPane(loginView);
+        centerPane.getChildren().add(loginView);
 
         root.setCenter(centerPane);
         Scene scene = new Scene(root, 640, 480);
