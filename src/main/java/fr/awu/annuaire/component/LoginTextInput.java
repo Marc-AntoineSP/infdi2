@@ -19,7 +19,7 @@ public class LoginTextInput {
         this.loginBox.getStyleClass().add("login-text-input-vbox");
         this.loginBox.setMaxWidth(Double.MAX_VALUE);
         this.loginBox.setFillWidth(true);
-    
+
         this.textField = new TextField();
         this.textField.setPromptText(placeholder);
         this.textField.getStyleClass().add("login-text-input-textfield");
