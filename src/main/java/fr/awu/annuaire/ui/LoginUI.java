@@ -1,7 +1,10 @@
 package fr.awu.annuaire.ui;
 
+import java.util.function.Consumer;
+
 import fr.awu.annuaire.component.LoginButtonGroup;
 import fr.awu.annuaire.component.LoginTextInput;
+import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.service.AuthService;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -9,9 +12,11 @@ import javafx.scene.layout.Priority;
 
 public class LoginUI {
     private AuthService authService;
+    private final Consumer<Person> onLoginSuccess;
 
-    public LoginUI(AuthService authService) {
+    public LoginUI(AuthService authService, Consumer<Person> onLoginSuccess) {
         this.authService = authService;
+        this.onLoginSuccess = onLoginSuccess;
     }
 
     public GridPane render() {

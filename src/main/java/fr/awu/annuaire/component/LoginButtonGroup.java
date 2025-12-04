@@ -17,4 +17,12 @@ public class LoginButtonGroup {
         buttonBox.getChildren().addAll(loginButton.render(), registerButton.render());
         return buttonBox;
     }
+
+    public ButtonPrimary getLoginButton() {
+        return loginButton;
+    }
+
+    public ButtonSecondary getRegisterButton() {
+        return registerButton;
+    }
 }

@@ -9,8 +9,8 @@ public class AuthService {
     private PersonService personService;
     private Person currentPerson;
 
-    public AuthService() {
-        this.personService = new PersonService();
+    public AuthService(PersonService personService) {
+        this.personService = personService;
     }
 
     public boolean login(String email, String password) {
@@ -25,7 +25,7 @@ public class AuthService {
         return false;
     }
 
-    public boolean checkRoleAdmin(Person person){
+    public boolean checkRoleAdmin(){
         return currentPerson.getRole() == Roles.ADMIN;
     }
 

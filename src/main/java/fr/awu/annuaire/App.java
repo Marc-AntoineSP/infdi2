@@ -33,6 +33,7 @@ public class App extends Application {
 
     ObservableList<Person> personObservableList = javafx.collections.FXCollections.observableArrayList();
     PersonService personService = new PersonService();
+    AuthService authService = new AuthService(personService);
     List<Person> mockPersons = new ArrayList<>();
 
     @Override
@@ -52,7 +53,7 @@ public class App extends Application {
         label.getStyleClass().add("top-bar-label");
         topBar.getItems().addAll(spacer, label, spacer2);
         root.setTop(topBar);
-        LoginUI loginUI = new LoginUI(new AuthService());
+        LoginUI loginUI = new LoginUI(authService);
         
         GridPane loginView = loginUI.render();
         StackPane centerPane = new StackPane(loginView);
