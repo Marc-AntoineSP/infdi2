@@ -121,13 +121,13 @@ L'application est pré-remplie avec des utilisateurs de test :
 #### 👤 Compte Administrateur
 
 - **Email :** `test.admin@example.com`
-- **Mot de passe :** `password`
+- **Mot de passe :** `adminpassword`
 - **Privilèges :** Accès complet (ajouter/modifier/supprimer employés, gérer services et sites)
 
 #### 👥 Compte Employé
 
 - **Email :** `test.employee@example.com`
-- **Mot de passe :** `password`
+- **Mot de passe :** `password123`
 - **Privilèges :** Lecture seule (consultation de l'annuaire)
 
 ---
