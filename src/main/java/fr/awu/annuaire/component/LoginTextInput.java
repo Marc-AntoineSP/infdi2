@@ -7,11 +7,31 @@ import javafx.scene.layout.VBox;
 
 public class LoginTextInput {
     private String label;
+    private Label labelNode;
     private String placeholder;
+    private TextField textField;
+    private VBox loginBox;
 
     public LoginTextInput(String label, String placeholder) {
         this.label = label;
         this.placeholder = placeholder;
+        this.loginBox = new VBox();
+        this.loginBox.getStyleClass().add("login-text-input-vbox");
+        this.loginBox.setMaxWidth(Double.MAX_VALUE);
+        this.loginBox.setFillWidth(true);
+    
+        this.textField = new TextField();
+        this.textField.setPromptText(placeholder);
+        this.textField.getStyleClass().add("login-text-input-textfield");
+        this.textField.setMaxWidth(Double.MAX_VALUE);
+        this.textField.setPrefWidth(400);
+
+        this.labelNode = new Label(label);
+        this.labelNode.setMaxWidth(Double.MAX_VALUE);
+        this.labelNode.getStyleClass().add("login-text-input-label");
+
+        this.loginBox.getChildren().addAll(labelNode, this.textField);
+
     }
 
     public String getLabel() {
@@ -31,22 +51,26 @@ public class LoginTextInput {
     }
 
     public Parent render() {
-        VBox inputBox = new VBox();
-        inputBox.getStyleClass().add("login-text-input-vbox");
-        inputBox.setMaxWidth(Double.MAX_VALUE);
-        inputBox.setFillWidth(true);
-        
-        Label labelNode = new Label(label);
-        labelNode.getStyleClass().add("login-text-input-label");
-        labelNode.setMaxWidth(Double.MAX_VALUE);
-        
-        TextField textField = new TextField();
-        textField.getStyleClass().add("login-text-input-textfield");
-        textField.setPromptText(placeholder);
-        textField.setMaxWidth(Double.MAX_VALUE);
-        textField.setPrefWidth(400); // Set a preferred width to ensure it expands
-        
-        inputBox.getChildren().addAll(labelNode, textField);
-        return inputBox;
+        return this.loginBox;
+    }
+
+    public Label getLabelNode() {
+        return labelNode;
+    }
+
+    public void setLabelNode(Label labelNode) {
+        this.labelNode = labelNode;
+    }
+
+    public TextField getTextField() {
+        return textField;
+    }
+
+    public void setTextField(TextField textField) {
+        this.textField = textField;
+    }
+
+    public VBox getLoginBox() {
+        return loginBox;
     }
 }
