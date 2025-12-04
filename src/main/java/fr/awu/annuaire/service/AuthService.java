@@ -25,6 +25,10 @@ public class AuthService {
         return null;
     }
 
+    public void logout(){
+        this.currentPerson = null;
+    }
+
     public boolean checkRoleAdmin(){
         return currentPerson.getRole() == Roles.ADMIN;
     }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.awu.annuaire.component.ButtonSecondary;
 import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.model.Service;
 import fr.awu.annuaire.model.Site;
@@ -22,16 +23,19 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 public class MainUI {
 
     private final ObservableList<Person> tablePersonList;
     private final AuthService authService;
+    private Runnable onLogout;
 
-    public MainUI(ObservableList<Person> tablePersonList, AuthService authService) {
+    public MainUI(ObservableList<Person> tablePersonList, AuthService authService, Runnable onLogout) {
         this.tablePersonList = tablePersonList;
-        this.authService = authService; // TODO: Faire le logout.
+        this.authService = authService;
+        this.onLogout = onLogout;
     }
 
     public Parent render() {
@@ -98,8 +102,6 @@ public class MainUI {
                 } else {
                     String firstName = normalize(person.getFirstName());
                     String lastName = normalize(person.getLastName());
-                    String serviceName = normalize(person.getService() != null ? person.getService().getName() : "");
-                    String siteVille = normalize(person.getSite() != null ? person.getSite().getVille() : "");
 
                     textOk = firstName.contains(query)
                             || lastName.contains(query);
@@ -151,10 +153,16 @@ public class MainUI {
         sortedPerson.comparatorProperty().bind(tableView.comparatorProperty());
         tableView.setItems(sortedPerson);
 
+        ButtonSecondary logoutButton = new ButtonSecondary("Logout");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox horizontalBoxLogout = new HBox(8, spacer, logoutButton.getButton());
+        logoutButton.getButton().setOnAction(e -> onLogout.run());
         HBox searchAndFilters = new HBox(8, searchField, siteFilterButton, serviceFilterButton);
         HBox.setHgrow(searchField, Priority.ALWAYS);
 
-        VBox root = new VBox(10, searchAndFilters, tableView);
+        VBox root = new VBox(10, horizontalBoxLogout, searchAndFilters, tableView);
         VBox.setVgrow(tableView, Priority.ALWAYS);
 
         return root;

@@ -67,24 +67,29 @@ public class App extends Application {
 
         
         StackPane centerPane = new StackPane();
-
+        final GridPane[] loginView = new GridPane[1];
         LoginUI loginUI = new LoginUI(authService, loggedPerson -> {
             System.out.println("User " + loggedPerson.getFirstName() + " " + loggedPerson.getLastName() + " logged in.");
             this.personObservableList.setAll(this.mockPersons);
-            MainUI mainUI = new MainUI(this.personObservableList, authService);
+
+            Runnable onLogout = () -> {
+                authService.logout();
+                centerPane.getChildren().setAll(loginView[0]);
+            };
+            MainUI mainUI = new MainUI(this.personObservableList, authService, onLogout);
             Parent mainView = mainUI.render();
             centerPane.getChildren().setAll(mainView);
         });
         
-        GridPane loginView = loginUI.render();
-        centerPane.getChildren().add(loginView);
+        loginView[0] = loginUI.render();
+        centerPane.getChildren().add(loginView[0]);
 
         root.setCenter(centerPane);
         Scene scene = new Scene(root, 640, 480);
         centerPane.setAlignment(Pos.CENTER);
-        loginView.maxWidthProperty().bind(centerPane.widthProperty().multiply(0.6));
+        loginView[0].maxWidthProperty().bind(centerPane.widthProperty().multiply(0.6));
 
-        loginView.maxHeightProperty().bind(centerPane.heightProperty().multiply(0.6));
+        loginView[0].maxHeightProperty().bind(centerPane.heightProperty().multiply(0.6));
         scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
         scene.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
         // scene.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
