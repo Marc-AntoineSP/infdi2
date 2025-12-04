@@ -7,16 +7,29 @@ import fr.awu.annuaire.model.Person;
 
 public class AuthService {
     private PersonService personService;
+    private Person currentPerson;
+
+    public AuthService() {
+        this.personService = new PersonService();
+    }
 
     public boolean login(String email, String password) {
         Person user = this.personService.findByEmail(email);
         if(user == null) {
             return false;
         }
-        return BCrypt.checkpw(password, user.getHashedPassword());
+        if(BCrypt.checkpw(password, user.getHashedPassword())) {
+            this.currentPerson = user;
+            return true;
+        }
+        return false;
     }
 
     public boolean checkRoleAdmin(Person person){
-        return person.getRole() == Roles.ADMIN;
+        return currentPerson.getRole() == Roles.ADMIN;
+    }
+
+    public Person getCurrentPerson() {
+        return currentPerson;
     }
 }

@@ -1,14 +1,21 @@
 package fr.awu.annuaire;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import atlantafx.base.theme.CupertinoDark;
 import atlantafx.base.theme.Dracula;
 import atlantafx.base.theme.NordDark;
 import atlantafx.base.theme.NordLight;
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
+import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.service.AuthService;
+import fr.awu.annuaire.service.PersonService;
 import fr.awu.annuaire.ui.LoginUI;
+import fr.awu.annuaire.utils.PopulateDB;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,8 +30,16 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class App extends Application {
+
+    ObservableList<Person> personObservableList = javafx.collections.FXCollections.observableArrayList();
+    PersonService personService = new PersonService();
+    List<Person> mockPersons = new ArrayList<>();
+
     @Override
     public void start(Stage stage) {
+
+        PopulateDB.populate();
+        mockPersons.addAll(personService.getAll());
 
         BorderPane root = new BorderPane();
         ToolBar topBar = new ToolBar();
@@ -59,13 +74,6 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
-        // System.out.println("App started.");
-        // List<Person> persons = new ArrayList<>();
-        // startController = new StartController(persons, personService);
-        // System.out.println(personService.getAll().size() + " persons in database.");
-        // System.out.println("Login time");
-        // loginConsole.creds();
-        
     }
 
 }
