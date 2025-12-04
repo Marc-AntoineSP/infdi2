@@ -1,0 +1,82 @@
+name: CI - Tests et Build
+
+on:
+  push:
+    branches: [main, evolution]
+  pull_request:
+    branches: [main, evolution]
+
+jobs:
+  test:
+    name: Tests et Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: "oracle"
+          java-version: "25"
+          cache: "maven"
+
+      - name: Installation des dépendances
+        run: mvn clean install -DskipTests
+
+      - name: Exécution des tests unitaires
+        run: mvn test -Dtest='!*IT'
+
+      - name: Exécution des tests d'intégration
+        run: mvn test -Dtest='*IT'
+
+      - name: Rapport de tests
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Résultats des tests
+          path: target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: true
+
+      - name: Build du projet
+        run: mvn package -DskipTests
+
+      - name: Upload de l'artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: annuaire-app
+          path: target/*.jar
+          retention-days: 30
+
+  code-quality:
+    name: Analyse de qualité du code
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: "oracle"
+          java-version: "25"
+          cache: "maven"
+
+      - name: Vérification du code (Maven Compiler)
+        run: mvn compile
+
+      - name: Statistiques du projet
+        run: |
+          echo "Statistiques du projet:"
+          echo "Nombre de fichiers Java:"
+          find src/main/java -name "*.java" | wc -l
+          echo "Nombre de tests:"
+          find src/test/java -name "*.java" | wc -l
+          echo "Lignes de code (main):"
+          find src/main/java -name "*.java" -exec cat {} \; | wc -l
+          echo "Lignes de code (tests):"
+          find src/test/java -name "*.java" -exec cat {} \; | wc -l
