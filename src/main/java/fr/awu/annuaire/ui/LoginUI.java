@@ -40,8 +40,19 @@ public class LoginUI {
         root.add(buttonGroup.render(), 0, 2, 1, 1);
 
         Button loginButton = buttonGroup.getLoginButton().getButton();
-        Button registerButton = buttonGroup.getRegisterButton().getButton();
 
+        loginButton.setOnAction(e -> {
+            String email = emailInput.getText();
+            String password = passwordInput.getText();
+
+            Person loggedPerson = authService.login(email, password);
+            if (loggedPerson != null) {
+                onLoginSuccess.accept(loggedPerson);
+            } else {
+                System.out.println("Login failed");
+            }
+        });
+        Button registerButton = buttonGroup.getRegisterButton().getButton();
         return root;
     }
 }

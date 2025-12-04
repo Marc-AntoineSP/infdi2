@@ -9,9 +9,12 @@ import atlantafx.base.theme.NordDark;
 import atlantafx.base.theme.NordLight;
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
+import fr.awu.annuaire.model.Employee;
 import fr.awu.annuaire.model.Person;
 import fr.awu.annuaire.service.AuthService;
 import fr.awu.annuaire.service.PersonService;
+import fr.awu.annuaire.service.ServiceService;
+import fr.awu.annuaire.service.SiteService;
 import fr.awu.annuaire.ui.LoginUI;
 import fr.awu.annuaire.utils.PopulateDB;
 import javafx.application.Application;
@@ -35,12 +38,19 @@ public class App extends Application {
     PersonService personService = new PersonService();
     AuthService authService = new AuthService(personService);
     List<Person> mockPersons = new ArrayList<>();
+    ServiceService serviceService = new ServiceService();
+    SiteService siteService = new SiteService();
 
     @Override
     public void start(Stage stage) {
 
         PopulateDB.populate();
         mockPersons.addAll(personService.getAll());
+
+        Person testEmployee = new Employee("Test", "Employee", "test.employee@example.com", "0123456789", "0123456789", serviceService.getAll().get(0), siteService.getAll().get(0), "password123");
+        personService.save(testEmployee);
+
+        System.out.println("Personne 1: " + mockPersons.get(0).getEmail() + " - " + mockPersons.get(0).getHashedPassword());
 
         BorderPane root = new BorderPane();
         ToolBar topBar = new ToolBar();
@@ -53,7 +63,9 @@ public class App extends Application {
         label.getStyleClass().add("top-bar-label");
         topBar.getItems().addAll(spacer, label, spacer2);
         root.setTop(topBar);
-        LoginUI loginUI = new LoginUI(authService);
+        LoginUI loginUI = new LoginUI(authService, loggedPerson -> {
+            System.out.println("User " + loggedPerson.getFirstName() + " " + loggedPerson.getLastName() + " logged in.");
+        });
         
         GridPane loginView = loginUI.render();
         StackPane centerPane = new StackPane(loginView);

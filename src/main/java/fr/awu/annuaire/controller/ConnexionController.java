@@ -13,8 +13,4 @@ public class ConnexionController {
         this.authService = authService;
     }
 
-    public boolean login(String email, String password) {
-        return authService.login(email, password);
-    }
-
 }

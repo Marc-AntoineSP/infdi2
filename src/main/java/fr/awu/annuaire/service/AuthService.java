@@ -13,16 +13,16 @@ public class AuthService {
         this.personService = personService;
     }
 
-    public boolean login(String email, String password) {
+    public Person login(String email, String password) {
         Person user = this.personService.findByEmail(email);
         if(user == null) {
-            return false;
+            return null;
         }
         if(BCrypt.checkpw(password, user.getHashedPassword())) {
             this.currentPerson = user;
-            return true;
+            return user;
         }
-        return false;
+        return null;
     }
 
     public boolean checkRoleAdmin(){
