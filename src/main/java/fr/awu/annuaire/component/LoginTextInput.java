@@ -38,16 +38,8 @@ public class LoginTextInput {
         return label;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     public String getPlaceholder() {
         return placeholder;
-    }
-
-    public void setPlaceholder(String placeholder) {
-        this.placeholder = placeholder;
     }
 
     public Parent render() {
@@ -58,19 +50,20 @@ public class LoginTextInput {
         return labelNode;
     }
 
-    public void setLabelNode(Label labelNode) {
-        this.labelNode = labelNode;
-    }
-
     public TextField getTextField() {
         return textField;
-    }
-
-    public void setTextField(TextField textField) {
-        this.textField = textField;
     }
 
     public VBox getLoginBox() {
         return loginBox;
     }
+
+    public String getText() {
+        return this.textField.getText();
+    }
+
+    public void setText(String text) {
+        this.textField.setText(text);
+    }
+
 }
